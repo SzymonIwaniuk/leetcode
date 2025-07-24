@@ -14,27 +14,30 @@ def dfs(graph: List[List[int]],
         for u in graph[v]:
             # print((u ,v), e1)
             if [u, v] != e1 and [v, u] != e1 and [u, v] != e2 and [v, u] != e2:
-                if visited[u] != None and not visited[u]:
+                if visited[u] is False:
                     visited[u] = True
                     dfs_visit(u)
 
     
     for v in range(n):
-        if visited[v] != None and not visited[v]:
+        if visited[v] is False:
             visited[v] = True
             dfs_visit(v)
         
-        #print(visited)
+        # print(visited)
         cur_xor = 0
+        flag = False
         for i in range(n):
             if visited[i] == True:
+                flag = True
                 cur_xor = cur_xor ^ nums[i]
                 visited[i] = None
         
-        maxi = max(maxi, cur_xor)
-        mini = min(mini, cur_xor)
-        print(maxi, mini)
-        
+        if flag:
+            maxi = max(maxi, cur_xor)
+            mini = min(mini, cur_xor)
+        # print(maxi, mini)
+
     return maxi - mini 
             
 
