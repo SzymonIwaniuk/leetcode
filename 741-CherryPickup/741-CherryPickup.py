@@ -1,43 +1,36 @@
 class Solution:
     def cherryPickup(self, grid: List[List[int]]) -> int:
         n = len(grid)
-        dp = [[0] * n for i in range(n)]
-        parents = [[None] * n for i in range(n)]
+        memo = {}
 
-        def rec(i, j):
-            dp[i][j] += grid[i][j]
+        def rec(r1, c1, c2):
+            if (r1, c1, c2) in memo:
+                return memo[(r1, c1, c2)]
 
-            if i + 1 < n and grid[i + 1][j] != -1 and dp[i + 1][j] <= dp[i][j]:
-                parents[i + 1][j] = (i, j)
-                dp[i + 1][j] = dp[i][j]
-                rec(i + 1, j)
+            r2 = r1 + c1 - c2
 
-            if j + 1 < n and grid[i][j + 1] != -1 and dp[i][j + 1] <= dp[i][j]:
-                parents[i][j + 1] = (i, j)
-                dp[i][j + 1] = dp[i][j]
-                rec(i, j + 1)
+            if r1 >= n or c1 >= n or r2 >= n or c2 >= n:
+                return float("-inf")
 
-        rec(0, 0)
-        i, j = n-1, n-1
-        path = set([(i, j)])
+            if grid[r1][c1] == -1 or grid[r2][c2] == -1:
+                return float("-inf")
 
-        while parents[i][j] != None:
-            path.add(parents[i][j])
-            i, j = parents[i][j][0], parents[i][j][1]
+            if r1 == c1 == n-1:
+                return grid[r1][c1]
 
-        back_dp = [[0] * n for i in range(n)]
-        def back(i ,j):
-            if grid[i][j] == 1 and (i, j) not in path:
-                back_dp[i][j] += 1
+            cherries = grid[r1][c1]
+            if (r1, c1) != (r2, c2):
+                cherries += grid[r2][c2]
 
-            if i - 1 >= 0 and grid[i - 1][j] != -1 and back_dp[i - 1][j] <= back_dp[i][j]:
-                back_dp[i - 1][j] = back_dp[i][j]
-                back(i - 1, j)
+            next_cherries = max(
+                rec(r1+1, c1, c2),
+                rec(r1, c1+1, c2),
+                rec(r1+1, c1, c2+1),
+                rec(r1, c1+1, c2+1)
+            )
 
-            if j - 1 >= 0 and grid[i][j - 1] != -1 and back_dp[i][j - 1] <= back_dp[i][j]:
-                back_dp[i][j - 1] = back_dp[i][j]
-                back(i, j - 1)
+            memo[(r1, c1, c2)] = cherries + next_cherries
+            return memo[(r1, c1, c2)]
+   
+        return max(0, rec(0,0,0))
 
-        back(n-1, n-1)
-
-        return dp[n-1][n-1] + back_dp[0][0]
