@@ -1,0 +1,49 @@
+class Spreadsheet:
+
+    def __init__(self, rows: int):
+        self.grid = {chr(i):[0]*rows for i in range(65,91)}
+        self.columns = set([chr(i) for i in range(65,91)])
+        self.digits = set([str(i) for i in range(0, 10)])
+
+    def setCell(self, cell: str, value: int) -> None:
+        col = cell[:1]
+        row = int(cell[1:])
+        self.grid[col][row-1] = value
+
+    def resetCell(self, cell: str) -> None:
+        col = cell[:1]
+        row = int(cell[1:])
+        self.grid[col][row-1] = 0      
+
+    def getValue(self, formula: str) -> int:
+        expr = formula[1:]
+        partition = expr.split('+')
+        result = 0
+        term1 = partition[0]
+        term2 = partition[1]
+
+        if term1[0] in self.columns:
+            col = term1[0]
+            row = int(term1[1:])
+            add = self.grid[col][row-1]
+        else:
+            add = int(term1)
+
+        result += add
+
+        if term2[0] in self.columns:
+            col = term2[0]
+            row = int(term2[1:])
+            add = self.grid[col][row-1]
+        else:
+            add = int(term2)
+
+        result += add
+        return result
+
+        
+# Your Spreadsheet object will be instantiated and called as such:
+# obj = Spreadsheet(rows)
+# obj.setCell(cell,value)
+# obj.resetCell(cell)
+# param_3 = obj.getValue(formula)
