@@ -41,3 +41,5 @@ class Solution:
                     _, l, r = sets[rep]
                     if l == 0 and r == col - 1:
                         return days
+
+        return days
