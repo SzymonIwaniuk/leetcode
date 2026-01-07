@@ -11,7 +11,7 @@ class Solution:
                         cnt += 1
                         factors.append(n // i)
                        
-            return cnt, factors
+            return sum(factors) if cnt == 4 else 0
 
         ans = 0
         memo = {}
@@ -20,12 +20,8 @@ class Solution:
             if n in memo:
                 ans += memo[n]
             else:
-                cnt, factors = count_factors(n)
-                if cnt == 4:
-                    sum_fac = sum(factors)
-                    memo[n] = sum_fac
-                    ans += sum_fac
-                else:
-                    memo[n] = 0
+                sum_fac = count_factors(n)
+                memo[n] = sum_fac
+                ans += sum_fac
         
         return ans
